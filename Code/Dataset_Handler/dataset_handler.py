@@ -96,7 +96,7 @@ def main():
 
     # Changes X to a numpy array
     # X will have the shape (?, 250, 250, 1), where ? is the number of images in the np array, (150, 150) is the image dimensions and 1 shows that these are greyscale images ( not rgb )
-    X = np.array(X).reshape(-1, 250, 250, 1)
+    X = np.array(X).reshape(-1, 250, 250, 3)
     y = np.array(y)
 
     # Repeat for testing data
@@ -107,11 +107,20 @@ def main():
         X_test.append(features)
         y_test.append(label)
 
-    X_test = np.array(X_test).reshape(-1, 250, 250, 1)
+    X_test = np.array(X_test).reshape(-1, 250, 250, 3)
     y_test = np.array(y_test)
 
 
     import joblib
+
+    # Save these serialised files outside the git folders as it is too large to have within the git
+    save_location = os.path.join(path, "..", "..", "Pickles")
+
+    # Make sure it exists
+    if not os.path.isdir(save_location):
+        os.mkdir(save_location)
+
+    os.chdir(save_location)
 
     # Create serialised training datasets
     pickle_out = open("X.pickle","wb")
