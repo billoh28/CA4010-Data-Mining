@@ -17,7 +17,7 @@ import numpy as np
 """ Input shape is (250, 250, 3)  """
 
 # Change working directory to dataset directory
-path = os.path.join(os.getcwd(), "..", "..", "Dataset")
+path = os.path.join(os.getcwd(), "..", "..", "..", "Pickles")
 os.chdir(path)
 
 #Load in training files
@@ -61,7 +61,7 @@ print("Testing...")
 model.fit(X_train, y_train, batch_size=16, epochs=10, verbose=1, validation_data=(X_test, y_test))#, callbacks=[tensorboard])
 
 # Save in a folder outsied of git as it is way too big
-save_location = os.path.join(path, "..", "..", "Models")
+save_location = os.path.join(path, "..", "Models")
 
 # Make sure it exists
 if not os.path.isdir(save_location):

@@ -17,7 +17,7 @@ class DataHandler:
         self.data_path = data_path
 
         # Subdirectories in parent file
-        self.DIRECTORIES = [("bee1", "bee2"), ("wasp1", "wasp2"), ("other_insect", "other_noinsect")]
+        self.DIRECTORIES = [["bee1", "bee2"], ["wasp1", "wasp2"], ["other_insect"], ["other_noinsect"]]
 
         # Labels
         self.INT_LABELS = [0, 1, 2]
@@ -32,7 +32,9 @@ class DataHandler:
         self.categorical_labels = to_categorical(self.INT_LABELS, num_classes=None)
 
     def create_data(self):
-        for i in range(len(self.DIRECTORIES)):
+        for i in range(len(self.DIRECTORIES) - 1): # Not including other_noinsect
+            print(self.DIRECTORIES[i])
+
             for j in range(len(self.DIRECTORIES[i])):
 
                 # Extract label and sub directory

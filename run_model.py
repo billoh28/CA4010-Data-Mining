@@ -15,7 +15,7 @@ def main():
     IMAGES_LOCATION = os.path.join(DATA_DIR, "Test_Images")
 
     # Labels
-    LABELS = ["bee", "wasp", "neither"]
+    LABELS = ["bee", "wasp", "insect", "non-insect"]
 
     # Outside Git repo
     model = load_model(os.path.join(DATA_DIR, "..", "Models", "model_1.h5"))
@@ -33,14 +33,21 @@ def main():
         img_array = cv2.resize(img_array, (250, 250))
 
         imgplot = plt.imshow(img_array)
-        plt.show()
+        #plt.show()
 
         img_array = np.array(img_array).reshape(-1, 250, 250, 3)
 
         prediction = model.predict(img_array, verbose=0)
         print(prediction)
 
-        output.append(LABELS[prediction.argmax()])
+        if np.amax(prediction) < 0.4:
+            print("Low confidence")
+            # Low confidence so assuming non insect
+            output.append(LABELS[-1])
+
+        else:
+            output.append(LABELS[prediction.argmax()])
+        
         names.append(image.split(".")[0])
 
     print("Output from the models : {}".format(" ".join(output)))
