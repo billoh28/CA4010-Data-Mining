@@ -18,7 +18,9 @@ def main():
     LABELS = ["bee", "wasp", "neither"]
 
     # Outside Git repo
-    model = load_model(os.path.join(DATA_DIR, "..", "Models", "model_1.h5"))
+    CNN_model = load_model(os.path.join(DATA_DIR, "..", "Models", "model_1.h5"))
+    #kNN_model = load_model(os.path.join(DATA_DIR, "..", "Models", "kNN_model_1.h5"))
+    #DT_model = load_model(os.path.join(DATA_DIR, "..", "Models", "DT_model_1.h5")) #Decision Tree
 
     # Possible output of the model
     output = []
@@ -27,6 +29,7 @@ def main():
     names = []
 
     # Feed images to the models
+    #for model in model:
     for image in os.listdir(IMAGES_LOCATION):
 
         img_array = cv2.imread(os.path.join(IMAGES_LOCATION, image))  # convert to array
@@ -37,7 +40,7 @@ def main():
 
         img_array = np.array(img_array).reshape(-1, 250, 250, 3)
 
-        prediction = model.predict(img_array, verbose=0)
+        prediction = CNN_model.predict(img_array, verbose=0)
         print(prediction)
 
         output.append(LABELS[prediction.argmax()])
