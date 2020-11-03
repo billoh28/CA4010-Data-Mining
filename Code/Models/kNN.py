@@ -11,10 +11,9 @@ def main():
     labels = []
 
     for (i, imagePath) in enumerate(imagePath):
-
         image = cv2.imread(imagePath)
-        labels.append(imagePath.split(os.path.sep)[-1].split(".")[0])
-        pixels = cv2.resize(image, (100, 100)).flatten()
+        labels.append(imagePath.split(os.path.sep)[-2].split(".")[0])
+        pixels = cv2.resize(image, (50, 50)).flatten()
         rawImages.append(pixels)
 
     (trainRI, testRI, trainRL, testRL) = train_test_split(rawImages, labels, test_size=0.25, random_state=42)
