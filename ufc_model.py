@@ -4,9 +4,9 @@ import pandas as pd
 
 PATH = os.getcwd()
 
-fighter_details = pd.read_csv(os.path.join("UFCDataset", "raw_fighter_details.csv"))
+fighter_detail = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_fighter_details.csv"))
 #for some reason this file is separated by a semicolon
-fight_data = pd.read_csv(os.path.join("UFCDataset", "raw_total_fight_data.csv"), sep=';')
+fight_data = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_total_fight_data.csv"), sep=';')
 
 #Separate the following colunms into two separate coloumns
 #The Original coloumns data looked like:
@@ -30,4 +30,34 @@ pct_columns = ['R_SIG_STR_pct','B_SIG_STR_pct', 'R_TD_pct', 'B_TD_pct']
 for column in pct_columns:
     fight_data[column] = fight_data[column].apply(lambda X: float(X.replace('%', ''))/100)
 
-print(fight_data.head())
+
+# Add fighter details to dataset
+
+fight_data = fight_data.merge(fighter_detail, left_on='R_fighter', right_on='fighter_name', how='left')
+fight_data.drop('fighter_name', axis=1, inplace=True)
+fight_data.rename(columns={'Height':'RED_Height', 'Weight':'RED_Weight', 'Reach':'RED_Reach', 'Stance':'RED_Stance', 'DOB':'RED_DOB'}, inplace=True)
+
+
+fight_data = fight_data.merge(fighter_detail, left_on='B_fighter', right_on='fighter_name', how='left')
+fight_data.drop('fighter_name', axis=1, inplace=True)
+fight_data.rename(columns={'Height':'BLUE_Height', 'Weight':'BLUE_Weight', 'Reach':'BLUE_Reach', 'Stance':'BLUE_Stance', 'DOB':'BLUE_DOB'}, inplace=True)
+
+print(list(fight_data))
+
+#print(list(fight_data["date"]))
+#print(list(fight_data["RED_DOB"])[0].split()[-1])
+
+def add_age(row, is_blue):
+    try:
+        if is_blue:
+            return int(row["date"].split()[-1]) - int(row["BLUE_DOB"].split()[-1])
+        return int(row["date"].split()[-1]) - int(row["RED_DOB"].split()[-1])
+    except AttributeError:
+        return 0
+
+# Adding age columns to dataset
+fight_data["RED_Age"] = fight_data.apply(lambda row: add_age(row, False), axis=1)
+fight_data["BLUE_Age"] = fight_data.apply(lambda row: add_age(row, True), axis=1)
+
+
+print(fight_data["RED_Age"])
