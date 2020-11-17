@@ -1,6 +1,10 @@
 import os
 import numpy as np
 import pandas as pd
+pd.set_option('display.max_rows', 500)
+pd.set_option('display.max_columns', 500)
+pd.set_option('display.width', 1000)
+
 
 PATH = os.getcwd()
 
@@ -59,5 +63,7 @@ def add_age(row, is_blue):
 fight_data["RED_Age"] = fight_data.apply(lambda row: add_age(row, False), axis=1)
 fight_data["BLUE_Age"] = fight_data.apply(lambda row: add_age(row, True), axis=1)
 
-
-print(fight_data["RED_Age"])
+#Within the height coloumn there are two float types
+fight_data["RED_Height"] = fight_data["RED_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
+fight_data["BLUE_Height"] = fight_data["BLUE_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
+print(fight_data.iloc[0])
