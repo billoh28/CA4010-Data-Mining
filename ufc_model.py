@@ -7,9 +7,7 @@ pd.set_option('display.width', 1000)
 
 
 def sanitation(degree=0):
-    # degree 0 : No sanitation
-    # degree 1 : Slight sanitation
-    # degree 2 : Complete sanitation
+    #  
 
     PATH = os.getcwd()
 
@@ -17,9 +15,6 @@ def sanitation(degree=0):
     #for some reason this file is separated by a semicolon
     fight_data = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_total_fight_data.csv"), sep=';')
 
-    if degree == 2:
-        # Remove any fighter with an nan in any cell 
-        fighter_detail.dropna(axis=0, how='any', inplace=True)
 
 
     #Separate the following colunms into two separate coloumns
@@ -56,6 +51,12 @@ def sanitation(degree=0):
     fight_data.drop('fighter_name', axis=1, inplace=True)
     fight_data.rename(columns={'Height':'BLUE_Height', 'Weight':'BLUE_Weight', 'Reach':'BLUE_Reach', 'Stance':'BLUE_Stance', 'DOB':'BLUE_DOB'}, inplace=True)
 
+    if degree == 2:
+        print(len(fight_data))
+        fight_data = fight_data.dropna(axis=0, how='any')
+        print(len(fight_data))
+
+    
     #print(list(fight_data["date"]))
     #print(list(fight_data["RED_DOB"])[0].split()[-1])
 
@@ -96,12 +97,11 @@ def sanitation(degree=0):
     #print(type(fight_data.iloc[0]['R_SIG_STR_pct']))
     #print(fight_data.iloc[999])
 
-
     #print(len(fight_data[fight_data['RED_Age'] == 0]))
 
-    # 64 + 172
-    # print(fight_data["RED_Age"].value_counts())
+    #print(fight_data.iloc[0])
     # print(fight_data["BLUE_Age"].value_counts())
+    print(fight_data.iloc[:, 9].values)
     return fight_data
 
 sanitation(degree=2)
