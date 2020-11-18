@@ -6,6 +6,17 @@ pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
+def extract_winner(row):
+    # Extract if red or blue won
+    red = row["R_fighter"].lower()
+    blue = row["B_fighter"].lower()
+    winner = row["Winner"].lower()
+
+    if winner == blue:
+        return 1
+
+    return 0
+
 
 def sanitation(degree=0):
 
@@ -102,7 +113,23 @@ def sanitation(degree=0):
 
     #print(fight_data.iloc[0])
     # print(fight_data["BLUE_Age"].value_counts())
-    #print(fight_data.iloc[0])
+
+    # Change winner to binary value
+    
+
+    fight_data["Winner"] = fight_data.apply(lambda row: (extract_winner(row)), axis=1) # extract if winner is red or blue
+
+    # Add winner to end of dataset
+    location = fight_data.columns.get_loc("Winner")
+
+    cols = fight_data.columns.tolist()
+
+    cols = cols[:location] + cols[location+1:] + [cols[location]]
+
+    fight_data = fight_data[cols]
+
+    print(fight_data.iloc[0])
+
     return fight_data
 
 sanitation(degree=1)
