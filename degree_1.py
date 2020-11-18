@@ -39,7 +39,6 @@ def sanitation_degree_1():
 
     fighter_detail = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_fighter_details.csv"))
     #for some reason this file is separated by a semicolon
-    fight_data = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_total_fight_data.csv"), sep=';')
 
     # Middle severity sanitation
     # Average all the data we can
@@ -67,7 +66,7 @@ def sanitation_degree_1():
     #print(fighter_detail["Height"].value_counts(sort=True, dropna=False))
 
     # Must convert heights to inches
-    fighter_detail["Height"] = fighter_detail["Height"].apply(lambda x: str((int(x.strip('"').split("' ")[0]) * 12) + int(x.strip('"').split("' ")[1])) if type(x) == str else x)
+    fighter_detail["Height"] = fighter_detail["Height"].apply(lambda x: (int(x.strip('"').split("' ")[0]) * 12) + int(x.strip('"').split("' ")[1]) if type(x) == str else x)
 
     temp = fighter_detail.iloc[:,1:3] # Copy weight and height colums
 
@@ -133,7 +132,7 @@ def sanitation_degree_1():
                 weight = int(row["Weight"])
 
                 # Change height from nan to an average
-                fighter_detail.at[index, "Height"] = average_w2h_dict[weight]
+                fighter_detail.at[index, "Height"] = int(average_w2h_dict[weight])
             except KeyError: # Over 265 lbs
                 fighter_detail.at[index, "Height"] = 80
 
@@ -143,7 +142,7 @@ def sanitation_degree_1():
                 height = int(row["Height"])
 
                 # Change height from nan to an average
-                fighter_detail.at[index, "Weight"] = average_h2w_dict[height]
+                fighter_detail.at[index, "Weight"] = int(average_h2w_dict[height])
             
             except KeyError: # Over or equal 265 lbs
                 fighter_detail.at[index, "Weight"] = 265
@@ -184,7 +183,7 @@ def sanitation_degree_1():
         elif pd.isna(row["Reach"]):
             fighter_detail.at[index, "Reach"] = int(row["Height"]) + 1
 
-    print(fighter_detail.iloc[209:213,])
+    #print(fighter_detail.iloc[209:213,])
 
     return fighter_detail
 

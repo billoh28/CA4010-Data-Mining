@@ -1,17 +1,21 @@
 import os
 import numpy as np
 import pandas as pd
+from degree_1 import sanitation_degree_1
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
 
 def sanitation(degree=0):
-    #  
 
     PATH = os.getcwd()
 
-    fighter_detail = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_fighter_details.csv"))
+    if degree == 1:
+        fighter_detail = sanitation_degree_1()
+
+    else:
+        fighter_detail = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_fighter_details.csv"))
     #for some reason this file is separated by a semicolon
     fight_data = pd.read_csv(os.path.join("UFCDataset", "Original", "raw_total_fight_data.csv"), sep=';')
 
@@ -51,11 +55,7 @@ def sanitation(degree=0):
     fight_data.drop('fighter_name', axis=1, inplace=True)
     fight_data.rename(columns={'Height':'BLUE_Height', 'Weight':'BLUE_Weight', 'Reach':'BLUE_Reach', 'Stance':'BLUE_Stance', 'DOB':'BLUE_DOB'}, inplace=True)
 
-    if degree == 2:
-        print(len(fight_data))
-        fight_data = fight_data.dropna(axis=0, how='any')
-        print(len(fight_data))
-
+    if degree in [1, 2]: fight_data = fight_data.dropna(axis=0, how='any')
     
     #print(list(fight_data["date"]))
     #print(list(fight_data["RED_DOB"])[0].split()[-1])
@@ -68,24 +68,25 @@ def sanitation(degree=0):
         except AttributeError:
             return 0
 
-    # Adding age columns to dataset
-    fight_data["RED_Age"] = fight_data.apply(lambda row: add_age(row, False), axis=1)
-    fight_data["BLUE_Age"] = fight_data.apply(lambda row: add_age(row, True), axis=1)
+    if degree != 1:
+        # Adding age columns to dataset
+        fight_data["RED_Age"] = fight_data.apply(lambda row: add_age(row, False), axis=1)
+        fight_data["BLUE_Age"] = fight_data.apply(lambda row: add_age(row, True), axis=1)
 
-    # Dont't need following rows for classification
-    fight_data.drop(['date', 'RED_DOB', 'BLUE_DOB', 'location'], axis=1, inplace=True)
+        # Dont't need following rows for classification
+        fight_data.drop(['date', 'RED_DOB', 'BLUE_DOB', 'location'], axis=1, inplace=True)
 
-    #Within the height coloumn there are two float types
-    fight_data["RED_Height"] = fight_data["RED_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
-    fight_data["BLUE_Height"] = fight_data["BLUE_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
+        #Within the height coloumn there are two float types
+        fight_data["RED_Height"] = fight_data["RED_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
+        fight_data["BLUE_Height"] = fight_data["BLUE_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
 
-    # Remove lbs from weight
-    fight_data["RED_Weight"] = fight_data["RED_Weight"].apply(lambda x: int(x.split()[0]) if type(x) == str else 0)
-    fight_data["BLUE_Weight"] = fight_data["BLUE_Weight"].apply(lambda x: int(x.split()[0]) if type(x) == str else 0)
+        # Remove lbs from weight
+        fight_data["RED_Weight"] = fight_data["RED_Weight"].apply(lambda x: int(x.split()[0]) if type(x) == str else 0)
+        fight_data["BLUE_Weight"] = fight_data["BLUE_Weight"].apply(lambda x: int(x.split()[0]) if type(x) == str else 0)
 
-    # Remove " from reach
-    fight_data["RED_Reach"] = fight_data["RED_Reach"].apply(lambda x: int(x.split('"')[0]) if type(x) == str else 0)
-    fight_data["BLUE_Reach"] = fight_data["BLUE_Reach"].apply(lambda x: int(x.split('"')[0]) if type(x) == str else 0)
+        # Remove " from reach
+        fight_data["RED_Reach"] = fight_data["RED_Reach"].apply(lambda x: int(x.split('"')[0]) if type(x) == str else 0)
+        fight_data["BLUE_Reach"] = fight_data["BLUE_Reach"].apply(lambda x: int(x.split('"')[0]) if type(x) == str else 0)
 
     # Changing format column to be no. minutes in fight
     fight_data["Fight_Duration"] = fight_data["Format"].apply(lambda x: int(x.split()[0]) * int(x.split()[-1].split('-')[-1].strip(')').strip('(')) if x.split()[0].isdigit() else 0)
@@ -101,7 +102,7 @@ def sanitation(degree=0):
 
     #print(fight_data.iloc[0])
     # print(fight_data["BLUE_Age"].value_counts())
-    print(fight_data.iloc[:, 9].values)
+    #print(fight_data.iloc[0])
     return fight_data
 
-sanitation(degree=2)
+sanitation(degree=1)

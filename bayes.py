@@ -10,7 +10,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn import metrics
 
-fight_dataset = sanitation(2)
+fight_dataset = sanitation(0)
 
 le = LabelEncoder()
 
