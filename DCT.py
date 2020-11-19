@@ -10,8 +10,20 @@ from sklearn.tree import DecisionTreeClassifier, plot_tree
 from ufc_model import sanitation
 from sklearn.metrics import classification_report, confusion_matrix
 
+# Taking args off command line
+# First argument for level of snaitition
+# Second for which classifier
+import sys
 
-fight_dataset = sanitation(2)
+args = sys.argv[1:]
+
+if int(args[1]) == 1:
+    fight_dataset = sanitation(int(args[0]), True)
+
+else:
+    fight_dataset = sanitation(int(args[0]))
+
+col = fight_dataset.columns # Save colums
 
 le = LabelEncoder()
 
@@ -40,7 +52,12 @@ print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
+# Print what every index of X is in order to see what the tree is splitting on
+for i in range(len(col)):
+    print("X[{:}] is: {:}".format(i, col[i]))
+
+
 # Plot tree
 fig, ax = plt.subplots(figsize=(15,12))
 plot_tree(classifier, max_depth=8, fontsize=5, filled=True)
-plt.show()
+#plt.show()

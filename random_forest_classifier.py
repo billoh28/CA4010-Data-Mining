@@ -12,12 +12,24 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 from sklearn.ensemble import RandomForestClassifier
 
+# Taking args off command line
+# First argument for level of snaitition
+# Second for which classifier
+import sys
 
-fight_dataset = sanitation(1)
+args = sys.argv[1:]
+
+if int(args[1]) == 1:
+    fight_dataset = sanitation(int(args[0]), True)
+
+else:
+    fight_dataset = sanitation(int(args[0]))
 
 le = LabelEncoder()
 
 fight_dataset = fight_dataset.apply(le.fit_transform)
+
+print(fight_dataset.iloc[1, :-1])
 
 X = fight_dataset.iloc[:, :-1].values
 y = fight_dataset.iloc[:, -1].values
@@ -42,4 +54,4 @@ print(confusion_matrix(y_test, y_pred))
 print(classification_report(y_test, y_pred))
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
-print(classifier.apply(X[:4]))
+#print(classifier.apply(X[:4]))

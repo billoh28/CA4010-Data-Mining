@@ -12,13 +12,14 @@ def extract_winner(row):
     blue = row["B_fighter"].lower()
     winner = row["Winner"].lower()
 
+    # No draws in dataset
     if winner == blue:
         return 1
 
     return 0
 
 
-def sanitation(degree=0):
+def sanitation(degree=0, is_prior=False):
 
     PATH = os.getcwd()
 
@@ -79,14 +80,17 @@ def sanitation(degree=0):
         except AttributeError:
             return 0
 
+
+    # Adding age columns to dataset
+    fight_data["RED_Age"] = fight_data.apply(lambda row: add_age(row, False), axis=1)
+    fight_data["BLUE_Age"] = fight_data.apply(lambda row: add_age(row, True), axis=1)
+
+
+    # Dont't need following rows for classification
+    fight_data.drop(['date', 'RED_DOB', 'BLUE_DOB', 'location'], axis=1, inplace=True)
+
+
     if degree != 1:
-        # Adding age columns to dataset
-        fight_data["RED_Age"] = fight_data.apply(lambda row: add_age(row, False), axis=1)
-        fight_data["BLUE_Age"] = fight_data.apply(lambda row: add_age(row, True), axis=1)
-
-        # Dont't need following rows for classification
-        fight_data.drop(['date', 'RED_DOB', 'BLUE_DOB', 'location'], axis=1, inplace=True)
-
         #Within the height coloumn there are two float types
         fight_data["RED_Height"] = fight_data["RED_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
         fight_data["BLUE_Height"] = fight_data["BLUE_Height"].apply(lambda x: (int(x.split()[0].split("'")[0])*12 + int(x.split()[1].split('"')[0])) if type(x) == str else 0)
@@ -128,8 +132,106 @@ def sanitation(degree=0):
 
     fight_data = fight_data[cols]
 
-    print(fight_data.iloc[0])
+
+    
+    # After consideration we decided to split the dataset in two
+    # We split on whether the model is predicting prior to the fight or after the fight
+
+    if not is_prior:
+        # Don't need half the things we have in as we onlt care about what happened in the fight
+        # We can also convert the fighters names in red or blue (0, 1)
+        
+        fight_data.drop("last_round", axis=1, inplace=True)
+        fight_data.drop("last_round_time", axis=1, inplace=True)
+        fight_data.drop("Referee", axis=1, inplace=True)
+        fight_data.drop("Fight_type", axis=1, inplace=True)
+        fight_data.drop("win_by", axis=1, inplace=True)
+        fight_data.drop("R_fighter", axis=1, inplace=True)
+        fight_data.drop("B_fighter", axis=1, inplace=True)
+
+        # After removing these columns the accuracy did not change, apart from a percent reduction with win_by for obvious reasons, meaning the models were not using these attributes
+
+        #print(fight_data.iloc[0])
+
+    else:
+        # prior prediction
+        # Want a dataset with all the fighters stastistics, red and blue, and who won the fight
+        # drop all details of the fight and keep evrything which was there before the fight.
+        # Still predicting the winner just without the insight of knowing how the fight went.
+        # In theory, this will make a model which could predict the outcome of two fighters given their statistics and not the outcome.
+
+        # Convert fighter to red and blue
+        #fight_data["R_fighter"] = fight_data["R_fighter"].apply(lambda x: 0)
+        #fight_data["B_fighter"] = fight_data["B_fighter"].apply(lambda x: 1)
+
+        fight_data.drop("R_fighter", axis=1, inplace=True)
+        fight_data.drop("B_fighter", axis=1, inplace=True)
+
+        # Drop irrelevant columns i.e data from the fight
+
+        # Drop Red & Blue fight data
+        fight_data.drop("R_KD", axis=1, inplace=True)
+        fight_data.drop("B_KD", axis=1, inplace=True)
+        fight_data.drop("R_SIG_STR_pct", axis=1, inplace=True)
+        fight_data.drop("B_SIG_STR_pct", axis=1, inplace=True)
+        fight_data.drop("R_TD_pct", axis=1, inplace=True)
+        fight_data.drop("B_TD_pct", axis=1, inplace=True)
+        fight_data.drop("R_SUB_ATT", axis=1, inplace=True)
+        fight_data.drop("B_SUB_ATT", axis=1, inplace=True)
+        fight_data.drop("R_PASS", axis=1, inplace=True)
+        fight_data.drop("B_PASS", axis=1, inplace=True)
+        fight_data.drop("R_REV", axis=1, inplace=True)
+        fight_data.drop("B_REV", axis=1, inplace=True)
+        fight_data.drop("R_SIG_STR._att", axis=1, inplace=True)
+        fight_data.drop("B_SIG_STR._att", axis=1, inplace=True)
+        fight_data.drop("R_SIG_STR._landed", axis=1, inplace=True)
+        fight_data.drop("B_SIG_STR._landed", axis=1, inplace=True)
+        fight_data.drop("R_TOTAL_STR._att", axis=1, inplace=True)
+        fight_data.drop("B_TOTAL_STR._att", axis=1, inplace=True)
+        fight_data.drop("R_TOTAL_STR._landed", axis=1, inplace=True)
+        fight_data.drop("B_TOTAL_STR._landed", axis=1, inplace=True)
+        fight_data.drop("R_TD_att", axis=1, inplace=True)
+        fight_data.drop("B_TD_att", axis=1, inplace=True)
+        fight_data.drop("R_TD_landed", axis=1, inplace=True)
+        fight_data.drop("B_TD_landed", axis=1, inplace=True)
+        
+        fight_data.drop("R_HEAD_att", axis=1, inplace=True)
+        fight_data.drop("B_HEAD_att", axis=1, inplace=True)
+        fight_data.drop("R_HEAD_landed", axis=1, inplace=True)
+        fight_data.drop("B_HEAD_landed", axis=1, inplace=True)
+
+        fight_data.drop("R_BODY_att", axis=1, inplace=True)
+        fight_data.drop("B_BODY_att", axis=1, inplace=True)
+        fight_data.drop("R_BODY_landed", axis=1, inplace=True)
+        fight_data.drop("B_BODY_landed", axis=1, inplace=True)
+
+        fight_data.drop("R_DISTANCE_att", axis=1, inplace=True)
+        fight_data.drop("B_DISTANCE_att", axis=1, inplace=True)
+        fight_data.drop("R_DISTANCE_landed", axis=1, inplace=True)
+        fight_data.drop("B_DISTANCE_landed", axis=1, inplace=True)
+
+        fight_data.drop("R_CLINCH_att", axis=1, inplace=True)
+        fight_data.drop("B_CLINCH_att", axis=1, inplace=True)
+        fight_data.drop("R_CLINCH_landed", axis=1, inplace=True)
+        fight_data.drop("B_CLINCH_landed", axis=1, inplace=True)
+
+        fight_data.drop("R_GROUND_att", axis=1, inplace=True)
+        fight_data.drop("B_GROUND_att", axis=1, inplace=True)
+        fight_data.drop("R_GROUND_landed", axis=1, inplace=True)
+        fight_data.drop("B_GROUND_landed", axis=1, inplace=True)
+
+        fight_data.drop("R_LEG_att", axis=1, inplace=True)
+        fight_data.drop("B_LEG_att", axis=1, inplace=True)
+        fight_data.drop("R_LEG_landed", axis=1, inplace=True)
+        fight_data.drop("B_LEG_landed", axis=1, inplace=True)
+
+        # Drop other fight data
+        fight_data.drop("last_round", axis=1, inplace=True)
+        fight_data.drop("last_round_time", axis=1, inplace=True)
+        fight_data.drop("win_by", axis=1, inplace=True)
+        fight_data.drop("Referee", axis=1, inplace=True)
 
     return fight_data
 
-sanitation(degree=1)
+
+sanitation(degree=1, is_prior=True)

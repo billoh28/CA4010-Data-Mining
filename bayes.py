@@ -10,7 +10,18 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn import metrics
 
-fight_dataset = sanitation(2)
+
+#Taking args off command line
+# First argument for level of snaitition
+import sys
+
+args = sys.argv[1:]
+
+if int(args[1]) == 1:
+    fight_dataset = sanitation(int(args[0]), True)
+
+else:
+    fight_dataset = sanitation(int(args[0]))
 
 le = LabelEncoder()
 
