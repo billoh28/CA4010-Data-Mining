@@ -19,12 +19,16 @@ fighter_detail["Height"] = fighter_detail["Height"].apply(lambda x: (int(x.split
 fighter_detail["Reach"] = fighter_detail["Reach"].apply(lambda x: int(x.split('"')[0]) if type(x) == str else 0)
 
 
+
 fighter_detail.plot.scatter(x='Height',
                       y='Reach',
                       c='DarkBlue',
                       ax=ax1)
 
 fighter_detail = sanitation_degree_1()
+print(fighter_detail["Height"].mean())
+print(fighter_detail["Height"].mode())
+print(fighter_detail["Height"].median())
 fighter_detail.plot.scatter(x='Height',
                       y='Reach',
                       c='DarkBlue',

@@ -20,4 +20,5 @@ data = data.apply(lambda x: int(x))
 
 sns.barplot(x=data, y=data.index, palette='rocket_r')
 
+plt.tight_layout()
 plt.show()

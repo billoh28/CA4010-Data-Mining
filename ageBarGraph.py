@@ -16,9 +16,15 @@ sns.set()
 sns.set(style="darkgrid")
 
 age = pd.concat([fight_data['RED_Age'], fight_data['BLUE_Age']], ignore_index=True)
+print(age.mean())
+print(age.mode())
+print(age.median())
 
 age_values = age.value_counts()
 age_labels = age_values.index
 
 sns.barplot(x=age_labels,y=age_values)
+plt.title('Histogram Showing Dispersion of Age')
+plt.ylabel('Number of Fighters')
+plt.xlabel('Age')
 plt.show()
