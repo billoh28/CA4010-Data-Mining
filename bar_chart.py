@@ -21,5 +21,5 @@ data = data.apply(lambda x: int(x))
 sns.barplot(x=data, y=data.index, palette='rocket_r')
 
 plt.tight_layout()
-plt.xlabel("No. Occurences")
+plt.title('Barchart Showing Disparity Fight Results')
 plt.show()
