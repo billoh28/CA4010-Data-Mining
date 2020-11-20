@@ -33,6 +33,11 @@ def get_percentage(x, y):
 	except:
 		return 0
 
+# Get number of landed strikes total
+fight_data["R_SIG_STR_NUM"] = fight_data["R_SIG_STR."].apply(lambda x: int(x.split()[0]) if type(x) == str else x)
+fight_data["B_SIG_STR_NUM"] = fight_data["B_SIG_STR."].apply(lambda x: int(x.split()[0]) if type(x) == str else x)
+
+
 # Change R_SIG_STR and B_SIG_STR from x of y to a float or integer percentage
 fight_data["R_SIG_STR."] = fight_data["R_SIG_STR."].apply(lambda x: get_percentage(int(x.split()[0]), int(x.split()[-1])) if type(x) == str else x)
 fight_data["B_SIG_STR."] = fight_data["B_SIG_STR."].apply(lambda x: get_percentage(int(x.split()[0]), int(x.split()[-1])) if type(x) == str else x)
@@ -42,11 +47,27 @@ fight_data["B_SIG_STR."] = fight_data["B_SIG_STR."].apply(lambda x: get_percenta
 #plt.show()
 
 # Now try plot all winners / losers against significant strikes
-fight_data["winners_sig_str_percentage"] = fight_data.apply(lambda row: row["R_SIG_STR."] if row["Winner"] == 0 else row["B_SIG_STR."], axis=1)
-fight_data["losers_sig_str_percentage"] = fight_data.apply(lambda row: row["B_SIG_STR."] if row["Winner"] == 0 else row["R_SIG_STR."], axis=1)
+fight_data["Winners_Sig_Str_Per"] = fight_data.apply(lambda row: row["R_SIG_STR."] if row["Winner"] == 0 else row["B_SIG_STR."], axis=1)
+fight_data["Losers_Sig_Str_Per"] = fight_data.apply(lambda row: row["B_SIG_STR."] if row["Winner"] == 0 else row["R_SIG_STR."], axis=1)
+
+# Knockdowns
+fight_data["Winners_KD_Per"] = fight_data.apply(lambda row: get_percentage(int(row["R_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))) if row["Winner"] == 0 else get_percentage(int(row["B_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))), axis=1)
+fight_data["Losers_KD_Per"] = fight_data.apply(lambda row: get_percentage(int(row["R_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))) if row["Winner"] == 1 else get_percentage(int(row["B_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))), axis=1)
+
+# Takedowns
+#fight_data["Winners_TD_Per"] = fight_data.apply(lambda row: get_percentage(int(row["R_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))) if row["Winner"] == 0 else get_percentage(int(row["B_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))), axis=1)
+#fight_data["Losers_TD_Per"] = fight_data.apply(lambda row: get_percentage(int(row["R_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))) if row["Winner"] == 1 else get_percentage(int(row["B_KD"]), (int(row["R_KD"]) + int(row["B_KD"]))), axis=1)
+
+# Get percentage of all landed strikes for both fighters
+#fight_data["Winners_Per_Total_Landed_Strikes"] = fight_data.apply(lambda row: get_percentage(row["R_SIG_STR_NUM"], (row["R_SIG_STR_NUM"] + row["B_SIG_STR_NUM"])) if row["Winner"] == 0 else get_percentage(row["B_SIG_STR_NUM"], (row["R_SIG_STR_NUM"] + row["B_SIG_STR_NUM"])), axis=1)
+#fight_data["Losers_Per_Total_Landed_Strikes"] = fight_data.apply(lambda row: get_percentage(row["R_SIG_STR_NUM"], (row["R_SIG_STR_NUM"] + row["B_SIG_STR_NUM"])) if row["Winner"] == 1 else get_percentage(row["B_SIG_STR_NUM"], (row["R_SIG_STR_NUM"] + row["B_SIG_STR_NUM"])), axis=1)
+
+# Tree splits on R_GROUND_landed so display results
+fight_data["Winners_Landed_Ground_Attacks"] = fight_data.apply(lambda row: int(row["R_GROUND"].split()[0]) if row["Winner"] == 0 else int(row["B_GROUND"].split()[0]), axis=1)
+fight_data["Losers_Landed_Ground_Attacks"] = fight_data.apply(lambda row: int(row["R_GROUND"].split()[0]) if row["Winner"] == 1 else int(row["B_GROUND"].split()[0]), axis=1)
 
 # Now plot this
-boxplot = fight_data.boxplot(column=["winners_sig_str_percentage", "losers_sig_str_percentage"])
+boxplot = fight_data.boxplot(column=["Winners_Landed_Ground_Attacks", "Losers_Landed_Ground_Attacks"])
 plt.show()
 
-print(fight_data.iloc[3])
+print(fight_data["R_GROUND"].iloc[3])

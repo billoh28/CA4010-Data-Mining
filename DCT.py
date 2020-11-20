@@ -60,4 +60,4 @@ for i in range(len(col)):
 # Plot tree
 fig, ax = plt.subplots(figsize=(15,12))
 plot_tree(classifier, max_depth=8, fontsize=5, filled=True)
-#plt.show()
+plt.show()
