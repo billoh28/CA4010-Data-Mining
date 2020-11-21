@@ -11,13 +11,12 @@ fight_data = sanitation(2) # for age
 
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 
-sns.set()
-sns.set(style="darkgrid")
-
 age = pd.concat([fight_data['RED_Age'], fight_data['BLUE_Age']], ignore_index=True)
 
-#stance = pd.concat([fighter_detail['Stance']], ignore_index=True)
-#stance = stance.dropna(axis=0, how='any')
+stance = pd.concat([fighter_detail['Stance']], ignore_index=True)
+stance = stance.dropna(axis=0, how='any')
+print(stance.value_counts())
+print(stance.mode())
 
 reach = fighter_detail["Reach"].apply(lambda x: int(x.split('"')[0]) if type(x) == str else x)
 reach = reach.dropna(axis=0, how='any')
@@ -31,6 +30,8 @@ weight = weight.dropna(axis=0, how='any')
 #print(age.mean())
 #print(age.mode())
 #print(age.median())
+
+print(weight.value_counts())
 
 # Plot Age
 ax1.hist(age)
@@ -54,6 +55,6 @@ ax3.set_xticks(range(50, 85, 2))
 ax4.hist(weight.sort_values(ascending=True))
 ax4.set_xlabel("Index")
 ax4.set_ylabel("Weight (lbs)")
-#ax4.set_xticks(range(100, 400, 10)) 
+ax4.set_xticks(range(100, 400, 10)) 
 
 plt.show()
