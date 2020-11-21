@@ -181,7 +181,11 @@ def sanitation_degree_1():
             continue
 
         elif pd.isna(row["Reach"]):
-            fighter_detail.at[index, "Reach"] = int(row["Height"]) + 1
+            if int(row["Height"]) in height_to_reach:
+                fighter_detail.at[index, "Reach"] = height_to_reach[int(row["Height"])]
+
+            else:
+                fighter_detail.at[index, "Reach"] = int(row["Height"]) + 1
 
     #print(fighter_detail.iloc[209:213,])
 
