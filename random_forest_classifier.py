@@ -45,7 +45,7 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 # Random state 
-classifier = RandomForestClassifier(max_depth=2, random_state=0)
+classifier = RandomForestClassifier(max_depth=5, random_state=0)
 classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)

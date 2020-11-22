@@ -43,7 +43,7 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 # Random state 
-classifier = DecisionTreeClassifier(random_state=21)
+classifier = DecisionTreeClassifier(random_state=21, max_depth = 5)
 classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)

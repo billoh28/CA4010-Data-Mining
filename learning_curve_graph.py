@@ -36,7 +36,7 @@ fight_dataset = fight_dataset.apply(le.fit_transform)
 X = fight_dataset.iloc[:, :-1].values
 y = fight_dataset.iloc[:, -1].values
 
-sizes, training_scores, testing_scores = learning_curve(RandomForestClassifier(max_depth=2, random_state=0), X, y, cv=10, scoring='accuracy', train_sizes=np.linspace(0.01, 1.0, 50)) 
+sizes, training_scores, testing_scores = learning_curve(RandomForestClassifier(random_state=21, max_depth=5), X, y, cv=10, scoring='accuracy', train_sizes=np.linspace(0.01, 1.0, 50)) 
   
 # Mean and Standard Deviation of training scores 
 mean_training = np.mean(training_scores, axis=1) 
