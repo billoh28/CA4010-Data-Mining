@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-
+import seaborn as sn
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from sklearn import metrics, tree
@@ -48,16 +48,23 @@ classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
 
-print(confusion_matrix(y_test, y_pred))
+df_cm = confusion_matrix(y_test, y_pred)
 print(classification_report(y_test, y_pred))
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
 
-# Print what every index of X is in order to see what the tree is splitting on
-for i in range(len(col)):
-    print("X[{:}] is: {:}".format(i, col[i]))
+plt.figure(figsize = (10,7))
 
-
-# Plot tree
-fig, ax = plt.subplots(figsize=(15,12))
-plot_tree(classifier, max_depth=8, fontsize=5, filled=True)
+graph = sn.heatmap(df_cm, annot=True)
+graph.set(xlabel='Predicted Label', ylabel='True Label')
 plt.show()
+
+
+# Print what every index of X is in order to see what the tree is splitting on
+# for i in range(len(col)):
+#     print("X[{:}] is: {:}".format(i, col[i]))
+
+
+# # Plot tree
+# fig, ax = plt.subplots(figsize=(15,12))
+# plot_tree(classifier, max_depth=8, fontsize=5, filled=True)
+# plt.show()

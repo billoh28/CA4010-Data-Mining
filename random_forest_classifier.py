@@ -9,7 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 from ufc_model import sanitation
 from sklearn.metrics import classification_report, confusion_matrix
-
+import seaborn as sn
 from sklearn.ensemble import RandomForestClassifier
 
 # Taking args off command line
@@ -50,8 +50,14 @@ classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
 
-print(confusion_matrix(y_test, y_pred))
+df_cm = confusion_matrix(y_test, y_pred)
 print(classification_report(y_test, y_pred))
 print("Accuracy:",metrics.accuracy_score(y_test, y_pred))
+
+plt.figure(figsize = (10,7))
+
+graph = sn.heatmap(df_cm, annot=True)
+graph.set(xlabel='Predicted Label', ylabel='True Label')
+plt.show()
 
 #print(classifier.apply(X[:4]))
