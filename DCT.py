@@ -60,11 +60,11 @@ plt.show()
 
 
 # Print what every index of X is in order to see what the tree is splitting on
-# for i in range(len(col)):
-#     print("X[{:}] is: {:}".format(i, col[i]))
+for i in range(len(col)):
+     print("X[{:}] is: {:}".format(i, col[i]))
 
 
 # # Plot tree
-# fig, ax = plt.subplots(figsize=(15,12))
-# plot_tree(classifier, max_depth=8, fontsize=5, filled=True)
-# plt.show()
+fig, ax = plt.subplots(figsize=(15,12))
+plot_tree(classifier, max_depth=5, fontsize=5, filled=True)
+plt.show()

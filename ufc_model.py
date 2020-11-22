@@ -67,6 +67,8 @@ def sanitation(degree=0, is_prior=False):
     fight_data.drop('fighter_name', axis=1, inplace=True)
     fight_data.rename(columns={'Height':'BLUE_Height', 'Weight':'BLUE_Weight', 'Reach':'BLUE_Reach', 'Stance':'BLUE_Stance', 'DOB':'BLUE_DOB'}, inplace=True)
 
+    fight_data.drop("Referee", axis=1, inplace=True) # Drop referee first as it is not needed
+
     if degree in [1, 2]: fight_data = fight_data.dropna(axis=0, how='any')
     
     #print(list(fight_data["date"]))
@@ -104,11 +106,20 @@ def sanitation(degree=0, is_prior=False):
         fight_data["BLUE_Reach"] = fight_data["BLUE_Reach"].apply(lambda x: int(x.split('"')[0]) if type(x) == str else 0)
 
     # Changing format column to be no. minutes in fight
-    fight_data["Fight_Duration"] = fight_data["Format"].apply(lambda x: int(x.split()[0]) * int(x.split()[-1].split('-')[-1].strip(')').strip('(')) if x.split()[0].isdigit() else 0)
+    #fight_data["Fight_Duration"] = fight_data["Format"].apply(lambda x: int(x.split()[0]) * int(x.split()[-1].split('-')[-1].strip(')').strip('(')) if x.split()[0].isdigit() else 0)
+    fight_data["Round_length_mins"] = fight_data["Format"].apply(lambda x: int(x.split()[-1].split('-')[-1].strip(')').strip('(')) if x.split()[0].isdigit() else 0)
+    fight_data["Duration"] = fight_data["Format"].apply(lambda x: int(x.split()[0]) * int(x.split()[-1].split('-')[-1].strip(')').strip('(')) if x.split()[0].isdigit() else 0)
+    
     fight_data.drop('Format', axis=1, inplace=True)
 
     # Changing last_round_time format to be in seconds
     fight_data["last_round_time"] = fight_data["last_round_time"].apply(lambda x: (int(x.split(':')[0])*60) + int(x.split(':')[1]) if type(x) == str else 0)
+
+    # Change duration to be last round time + previous rounds
+    fight_data["Total_Time"] = fight_data.apply(lambda row: int(row["last_round_time"]) + ((int(row["last_round"])-1) * int(row["Round_length_mins"]) * 60) if type(row["last_round"]) == int else 0, axis=1)
+
+    # Now drop rest
+    fight_data.drop('Round_length_mins', axis=1, inplace=True)
 
     #print(type(fight_data.iloc[0]['R_SIG_STR_pct']))
     #print(fight_data.iloc[999])
@@ -132,7 +143,7 @@ def sanitation(degree=0, is_prior=False):
 
     fight_data = fight_data[cols]
 
-
+    #fight_data.drop("Winner", axis=1, inplace=True)
     
     # After consideration we decided to split the dataset in two
     # We split on whether the model is predicting prior to the fight or after the fight
@@ -143,7 +154,6 @@ def sanitation(degree=0, is_prior=False):
         
         fight_data.drop("last_round", axis=1, inplace=True)
         fight_data.drop("last_round_time", axis=1, inplace=True)
-        fight_data.drop("Referee", axis=1, inplace=True)
         fight_data.drop("Fight_type", axis=1, inplace=True)
         fight_data.drop("win_by", axis=1, inplace=True)
         fight_data.drop("R_fighter", axis=1, inplace=True)
@@ -231,7 +241,12 @@ def sanitation(degree=0, is_prior=False):
         fight_data.drop("win_by", axis=1, inplace=True)
         fight_data.drop("Referee", axis=1, inplace=True)
 
+    # Remove red fighters so equal number of red and blue winners
+    # Go through data and count number of blue winners, add to new dataset. Then add red wineers up until max is reached
+
+
+    print(fight_data.iloc[0])
     return fight_data
 
 
-sanitation(degree=1, is_prior=True)
+sanitation(degree=1, is_prior=False)
