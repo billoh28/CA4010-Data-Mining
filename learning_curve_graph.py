@@ -36,7 +36,7 @@ fight_dataset = fight_dataset.apply(le.fit_transform)
 X = fight_dataset.iloc[:, :-1].values
 y = fight_dataset.iloc[:, -1].values
 
-sizes, training_scores, testing_scores = learning_curve(GaussianNB(), X, y, cv=10, scoring='accuracy', train_sizes=np.linspace(0.01, 1.0, 50)) 
+sizes, training_scores, testing_scores = learning_curve(DecisionTreeClassifier(), X, y, cv=10, scoring='accuracy', train_sizes=np.linspace(0.01, 1.0, 50)) 
   
 # Mean and Standard Deviation of training scores 
 mean_training = np.mean(training_scores, axis=1) 
@@ -51,7 +51,7 @@ plt.plot(sizes, mean_training, '--', color="b",  label="Training score")
 plt.plot(sizes, mean_testing, color="g", label="Cross-validation score") 
   
 # Drawing plot 
-plt.title("LEARNING CURVE FOR Random Forest Classifier") 
+plt.title("LEARNING CURVE FOR Decision Tree") 
 plt.xlabel("Training Set Size"), plt.ylabel("Accuracy Score"), plt.legend(loc="best") 
 plt.tight_layout() 
 plt.show()

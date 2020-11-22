@@ -151,7 +151,7 @@ def sanitation(degree=0, is_prior=False):
 
         # After removing these columns the accuracy did not change, apart from a percent reduction with win_by for obvious reasons, meaning the models were not using these attributes
 
-        #print(fight_data.iloc[1])
+        #print(fight_data.iloc[0])
 
     else:
         # prior prediction
@@ -234,4 +234,4 @@ def sanitation(degree=0, is_prior=False):
     return fight_data
 
 
-sanitation(degree=1, is_prior=False)
+sanitation(degree=1, is_prior=True)

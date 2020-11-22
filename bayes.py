@@ -32,12 +32,6 @@ y = fight_dataset.iloc[:, -1].values
 
 X_train, X_test, y_train, y_test = X[int(len(X) * .2):] , X[:int(len(X) * .2)], y[int(len(y) * .2):] , y[:int(len(y) * .2)]
 
-scaler = StandardScaler()
-scaler.fit(X_train)
-
-X_train = scaler.transform(X_train)
-X_test = scaler.transform(X_test)
-
 classifier = GaussianNB()
 classifier.fit(X_train, y_train)
 
