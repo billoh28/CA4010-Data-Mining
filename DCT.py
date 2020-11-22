@@ -65,6 +65,6 @@ for i in range(len(col)):
 
 
 # # Plot tree
-fig, ax = plt.subplots(figsize=(15,12))
-plot_tree(classifier, max_depth=5, fontsize=5, filled=True)
+fig, ax = plt.subplots(figsize=(7,7))
+plot_tree(classifier, max_depth=4, fontsize=6, filled=True)
 plt.show()
